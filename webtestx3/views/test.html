@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+
+<body>
+    <div style="width: 45%;">
+        <div>
+            <canvas id="chart"></canvas>
+            <canvas id="chart2"></canvas>
+        </div>
+        <!--溫度-->
+        <script type="text/javascript">
+
+            // 溫度
+            var dataLabels = ['1h', '2h', '3h', '4h', '5h', '6h', '7h', '8h', '9h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h', '0h'];
+            var data_tm = [133058, 253219, 255194, 233058, 253219, 277318, 277714, 273337, 255194, 277318, 277714, 273337, 233058, 253219, 277318, 253219, 277318, 277714, 273337, 255194, 277714, 273337, 255194, 293058];
+
+            var config = {
+                type: 'line',
+                data: {
+                    labels: dataLabels,
+                    datasets: [
+                        {
+                            label: '溫度',
+                            data: data_tm,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            fill: false,
+                        },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: '濕度'
+                    },
+                }
+            };
+
+            var ctx = document.getElementById('chart').getContext('2d');
+           // var chart = new Chart(ctx, config);
+/*
+            setInterval(function () {
+                if (config.data.datasets.length > 0) {
+
+                    var last = parseInt(dataLabels[dataLabels.length - 1]);
+                    var label = last + 1;
+                    if (last >= 23) {
+                        label = 0;
+                    }
+                    label = label + 'h';
+
+                    dataLabels.push(label);
+                    data_tm.push(getRandomNum(200000, 300000));
+                    data_tm.push(getRandomNum(10000, 80000));
+
+                    dataLabels.shift();
+                    data_tm.shift();
+                    data_tm.shift();
+
+                    chart.update();
+                }
+            }, 1000);
+*/
+            function getRandomNum(min, max) {
+                var range = max - min;
+                var rand = Math.random();
+                return (min + Math.round(rand * range));
+            }
+
+
+
+
+            //濕度
+            var ctx = document.getElementById('chart2').getContext('2d');
+            var chart2 = new Chart(ctx, config);
+
+            var dataLabels = ['1h', '2h', '3h', '4h', '5h', '6h', '7h', '8h', '9h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h', '0h'];
+            var datahum = [133058, 253219, 255194, 233058, 253219, 277318, 277714, 273337, 255194, 277318, 277714, 273337, 233058, 253219, 277318, 253219, 277318, 277714, 273337, 255194, 277714, 273337, 255194, 293058];
+
+            var config = {
+                type: 'line',
+                data: {
+                    labels: dataLabels,
+                    datasets: [
+                        {
+                            label2: '濕度',
+                            data: datahum,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            fill: false,
+                        },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text2: '濕度'
+                    },
+                }
+            };
+
+
+
+
+            setInterval(function () {
+                if (config.data.datasets.length > 0) {
+
+                    var last = parseInt(dataLabels[dataLabels.length - 1]);
+                    var label = last + 1;
+                    if (last >= 23) {
+                        label = 0;
+                    }
+                    label = label + 'h';
+
+                    dataLabels.push(label);
+                    data_hum.push(getRandomNum(200000, 300000));
+
+
+                    dataLabels.shift();
+                    data_hum.shift();
+
+
+                    chart.update();
+                }
+            }, 1000);
+
+            function getRandomNum(min, max) {
+                var range = max - min;
+                var rand = Math.random();
+                return (min + Math.round(rand * range));
+            }
+        </script>
+</body>
+
+</html>

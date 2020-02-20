@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+
+<html>
+
+
+<head>
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+</head>
+
+<body>
+	<script type="text/javascript">
+		var strUrl = location.search;
+		var getPara, ParaVal;
+		var aryPara = [];
+		var key = ""
+
+		if (strUrl.indexOf("?") != -1) {
+			var getSearch = strUrl.split("?");
+			getPara = getSearch[1].split("&");
+			for (i = 0; i < getPara.length; i++) {
+				ParaVal = getPara[i].split("=");
+				aryPara.push(ParaVal[0]);
+				aryPara[ParaVal[0]] = ParaVal[1];
+			}
+		}
+		//key = aryPara['key']
+		//console.log(key)
+		//$('#sensorId').val(key)
+		//$('#sensorId2').val(key)
+
+	</script>
+	<meta charset="utf-8">
+
+	<h1 style="Background: Aqua">智慧價值<h1>
+			<h2>sensor_data</h2>
+			<li>sensor_ID：<input type="text" id='sensorId2' /></li>
+			<input type="button" value="Exit" onclick="location.href='/show'"
+				style="width:80px;height:50px;font-size:20px;">
+			<br></br>
+			<div>
+				<form>
+					<hr>
+					<input type="text" id='sensorId' />
+					<input type="datetime-local" id="startDate" name="startDate"> ~ <input type="datetime-local"
+						id="endDate" name="endDate">
+					<!--
+					<input type="button" value="確定" onclick="getForm(sensorId, startDate, endDate)">
+					-->
+
+					<input type="button" value="確定"
+						onclick="getForm($('#sensorId').val(),$('#startDate').val(),$('#endDate').val());">
+					</hr>
+
+					<br></br>
+
+					<button onclick="getBeforeDate(7)">最近7天</button>
+					<button onclick="getBeforeDate(30)">最近30天</button>
+					<button onclick="getBeforeDate(90)">最近90天</button>
+
+
+					<li>temperature:藍色</li>
+					<li>humidity:紅色</li>
+
+				</form>
+			</div>
+
+			<script>
+				//if ("key" in aryPara){			
+				key = aryPara['key']
+				console.log(key)
+				$('#sensorId').val(key)
+				$('#sensorId2').val(key)
+				//}
+
+				function getBeforeDate(n) {
+
+					let date = new Date();
+					let day1 = date.getTime();
+
+					//let timeStamp = theDay.setDate(theDay.getDate() + changeDay)      // theDay.getDate() 是用來取得今天是幾號
+
+					//var n = n;
+					//var d = new Date();
+					//$('#startDate').val(`${year}-${month}-${day2}T${hour}:${minute}:${second}`);
+					let d2 = day1 - (1000 * 60 * 60 * 24) * n
+					let dd = new Date(d2);
+
+
+					let year = dd.getFullYear();
+					let month = dd.getMonth() + 1;
+					month = month < 10 ? '0' + month : month;
+					let day = dd.getDate();
+					day = day < 10 ? '0' + day : day;
+
+					let hour = date.getHours();
+					hour = hour < 10 ? '0' + hour : hour;
+					let minute = date.getMinutes();
+					minute = minute < 10 ? '0' + minute : minute;
+					let second = date.getSeconds();
+					second = second < 10 ? '0' + second : second;
+
+					$('#startDate').val(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+					console.log($('#startDate').val());
+					//return str2;
+				}
+				//console.log(getBeforeDate(7));//前七天的日期
+				//console.log(getBeforeDate(30));//前30天的日期
+				//console.log(getBeforeDate(90));//前90天的日期
+			</script>
+
+			<script>
+
+
+				function renderChart(tempDataPoints, humDataPoints) {
+					var chart = new CanvasJS.Chart("chartContainer", {
+						animationEnabled: true,
+						title: {
+							text: "Temperature and humidity time graph"
+						},
+						toolTip: {
+							shared: true
+						},
+						axisX: {
+							title: "時間",
+							suffix: " h"
+						},
+						axisY: {
+							/*title: "temperature",*/
+							titleFontColor: "#4F81BC",
+							suffix: " m",
+							lineColor: "#4F81BC",
+							tickColor: "#4F81BC"
+						},
+						axisY2: {
+							title: "humidity",
+							titleFontColor: "#C0504E",
+							suffix: "m",
+							lineColor: "#C0504E",
+							tickColor: "#C0504E"
+						},
+						data: [
+							{
+								type: "spline",
+								name: "temperature",
+								xValueType: "dateTime",
+								xValueFormatString: "DD HH:mm:ss",
+								yValueFormatString: "##,# 0.0 C",
+								dataPoints: tempDataPoints
+							},
+							{
+								type: "spline",
+								//axisYType: "secondary",
+								name: "humidity",
+								// yValueType: "dateTime",
+								// yValueFormatString: "DD HH:mm:ss",
+								yValueFormatString: "##,# 0.0 '%'",
+								dataPoints: humDataPoints
+							}]
+					});
+					chart.render();
+				}
+
+				function strToDateOject(str) {
+					var d = new Date(str); //yyyy-mm-dd DD HH:mm:ss
+					var elapsed = d.getTime();
+					return elapsed;
+				}
+
+				/*
+								const list = ({
+									data1: {
+										Hosts: '192.168.1.114:80',
+										Device: 'scart1',
+										key: 'S5M0RSWXO1N8DUVR',
+									},
+									data2: {
+										Hosts: '192.168.1.114:80',
+										Device: 'scart2',
+										key: '7H3W0YBKSX4FUB9H',
+									}
+								});
+								const idList = Object.keys(list);
+								const idList = list.map(item => Object.values(item)[0]);
+				
+								var getUrlString = location.href;
+								// location.href 利用這個取得網址，並存入getUrlString變數裡面。
+								var url = new URL(getUrlString);
+								//一個url變數 new URL物件(getUrlString)  ，  URL表示 web 上資料位址的方式，地指資料所在的位置。
+								var lemp = url.searchParams.get('key')
+								console.log(lemp);
+				*/
+
+
+				function getForm(sensorId, startDate, endDate) {
+					// let sensorId = "S5M0RSWXO1N8DUVR";
+					// let startDate = "2020-02-07T11:21:31.474Z";
+					// let endDate = "2020-02-07T23:45:05.216Z";
+
+					$.ajax({
+						url: `/getload?field1=${sensorId}&field2=${startDate}&field3=${endDate}`,
+						success: function (data) {
+
+							let tempData = [];
+							for (let i = 0; i < data.length; i++) {
+								let record = data[i];
+								let dataPoint = { x: strToDateOject(record.stime), y: record.temp };
+								tempData.push(dataPoint);
+							}
+
+							var humData = [];
+							for (var h = 0; h < data.length; h++) {
+								var record = data[h];
+								var dataPoint = { x: strToDateOject(record.stime), y: record.hum };
+								humData.push(dataPoint);
+							}
+
+							renderChart(tempData, humData);
+						}
+					});
+				}
+
+
+				$(document).ready(function () {
+					let date = new Date();
+					let year = date.getFullYear();
+					let month = date.getMonth() + 1;
+					month = month < 10 ? '0' + month : month;
+					let day = date.getDate();
+					day = day < 10 ? '0' + day : day;
+
+					let hour = date.getHours();
+					hour = hour < 10 ? '0' + hour : hour;
+					let minute = date.getMinutes();
+					minute = minute < 10 ? '0' + minute : minute;
+					let second = date.getSeconds();
+					second = second < 10 ? '0' + second : second;
+
+					$('#endDate').val(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+					getBeforeDate(7);
+					//$('#startDate').val(`${year}-${month}-${day2}T${hour}:${minute}:${second}`);
+					//$('#startDate').val(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+					//$('#endDate').val(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+					getForm($('#sensorId').val(), $('#startDate').val(), $('#endDate').val());
+					//window.setInterval(getForm, 30000);
+				});
+
+				Date();
+
+			</script>
+
+			<div id="chartContainer" style="height: 500px; width: 80%;"></div>
+
+</body>
+
+</html>
